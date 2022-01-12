@@ -24,30 +24,38 @@ let config: HardhatUserConfig = {
     hardhat: {
       deploy: ["./deploy/mainnet/"],
     },
-    mainnet: {
-      url: process.env.ALCHEMY_API,
-      deploy: ["./deploy/mainnet/"],
-    },
-    ropsten: {
-      url: process.env.ALCHEMY_API_ROPSTEN,
-      gasPrice: ethers.utils.parseUnits("1.01", "gwei").toNumber(),
+    matic_mumbai: {
+      url: process.env.ALCHEMY_API_MATIC_TESTNET,
+      gasPrice: ethers.utils.parseUnits("3", "gwei").toNumber(),
       accounts: {
         mnemonic: process.env.MNEMONIC_TEST_ACCOUNT,
       },
-      deploy: ["./deploy/mainnet/"],
+      deploy: ["./deploy/matic/"],
     },
-    arbitrum_testnet: {
-      url: "https://rinkeby.arbitrum.io/rpc",
-      accounts: {
-        mnemonic: process.env.MNEMONIC_TEST_ACCOUNT,
-      },
-      deploy: ["./deploy/arbitrum/"],
-    },
-    arbitrum_mainnet: {
-      url: "https://arb1.arbitrum.io/rpc",
-      gasPrice: ethers.utils.parseUnits("2", "gwei").toNumber(),
-      deploy: ["./deploy/arbitrum/"],
-    },
+    // mainnet: {
+    //   url: process.env.ALCHEMY_API,
+    //   deploy: ["./deploy/mainnet/"],
+    // },
+    // ropsten: {
+    //   url: process.env.ALCHEMY_API_ROPSTEN,
+    //   gasPrice: ethers.utils.parseUnits("1.01", "gwei").toNumber(),
+    //   accounts: {
+    //     mnemonic: process.env.MNEMONIC_TEST_ACCOUNT,
+    //   },
+    //   deploy: ["./deploy/mainnet/"],
+    // },
+    // arbitrum_testnet: {
+    //   url: "https://rinkeby.arbitrum.io/rpc",
+    //   accounts: {
+    //     mnemonic: process.env.MNEMONIC_TEST_ACCOUNT,
+    //   },
+    //   deploy: ["./deploy/arbitrum/"],
+    // },
+    // arbitrum_mainnet: {
+    //   url: "https://arb1.arbitrum.io/rpc",
+    //   gasPrice: ethers.utils.parseUnits("2", "gwei").toNumber(),
+    //   deploy: ["./deploy/arbitrum/"],
+    // },
   },
   paths: {
     sources: "./contracts",
@@ -88,7 +96,7 @@ let config: HardhatUserConfig = {
       42161: 0,
     },
     libraryDeployer: {
-      default: 1, // use a different account for deploying libraries on the hardhat network
+      default: 0, // use a different account for deploying libraries on the hardhat network
       1: 0, // use the same address as the main deployer on mainnet
       42161: 0, // use the same address on arbitrum mainnet
     },
@@ -99,8 +107,8 @@ let config: HardhatUserConfig = {
   },
 }
 
-if (process.env.ETHERSCAN_API) {
-  config = { ...config, etherscan: { apiKey: process.env.ETHERSCAN_API } }
+if (process.env.POLY_SCAN_API) {
+  config = { ...config, etherscan: { apiKey: process.env.POLY_SCAN_API } }
 }
 
 if (process.env.ACCOUNT_PRIVATE_KEYS) {

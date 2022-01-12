@@ -5,6 +5,7 @@ export const CHAIN_ID = {
   HARDHAT: "31337",
   ARBITRUM_MAINNET:  "42161",
   ARBITRUM_TESTNET: "421611",
+  MATIC_MUMBAI: "80001",
 }
 
 export function isMainnet(networkId: string): boolean {
@@ -16,6 +17,7 @@ export function isTestNetwork(networkId: string): boolean {
     networkId == CHAIN_ID.HARDHAT ||
     networkId == CHAIN_ID.ROPSTEN ||
     networkId == CHAIN_ID.KOVAN ||
-    networkId == CHAIN_ID.ARBITRUM_TESTNET
+    networkId == CHAIN_ID.ARBITRUM_TESTNET ||
+    networkId == CHAIN_ID.MATIC_MUMBAI
   )
 }
