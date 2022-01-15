@@ -14,16 +14,16 @@ const func: DeployFunction = async function (hre: HardhatRuntimeEnvironment) {
   } else {
     // Constructor arguments
     const TOKEN_ADDRESSES = [
-      (await get("FRAX")).address,
+      (await get("DAI")).address,
       (await get("USDC")).address,
       (await get("USDT")).address,
     ]
     const TOKEN_DECIMALS = [18, 6, 6]
-    const LP_TOKEN_NAME = "Saddle FRAX/USDC/USDT"
-    const LP_TOKEN_SYMBOL = "saddleArbUSDv2"
+    const LP_TOKEN_NAME = "Mune DAI/USDC/USDT"
+    const LP_TOKEN_SYMBOL = "muneUSD"
     const INITIAL_A = 200
     const SWAP_FEE = 4e6 // 4bps
-    const ADMIN_FEE = 0
+    const ADMIN_FEE = 50e8
 
     await deploy("SaddleArbUSDPoolV2", {
       from: deployer,
