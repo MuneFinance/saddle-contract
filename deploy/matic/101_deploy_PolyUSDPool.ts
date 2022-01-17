@@ -1,6 +1,6 @@
 import { HardhatRuntimeEnvironment } from "hardhat/types"
 import { DeployFunction } from "hardhat-deploy/types"
-import { ARBITRUM_MULTISIG_ADDRESS } from "../../utils/accounts"
+import { MULTISIG_ADDRESS } from "../../utils/accounts"
 
 const func: DeployFunction = async function (hre: HardhatRuntimeEnvironment) {
   const { deployments, getNamedAccounts } = hre
@@ -8,24 +8,24 @@ const func: DeployFunction = async function (hre: HardhatRuntimeEnvironment) {
   const { deployer } = await getNamedAccounts()
 
   // Manually check if the pool is already deployed
-  const saddleArbUSDPool = await getOrNull("SaddleArbUSDPool")
-  if (saddleArbUSDPool) {
-    log(`reusing "SaddleArbUSDPool" at ${saddleArbUSDPool.address}`)
+  const muneUSDPool = await getOrNull("MuneUSDPool")
+  if (muneUSDPool) {
+    log(`reusing "MuneUSDPool" at ${muneUSDPool.address}`)
   } else {
     // Constructor arguments
     const TOKEN_ADDRESSES = [
-      (await get("nUSD")).address,
-      (await get("MIM")).address,
+      (await get("DAI")).address,
       (await get("USDC")).address,
       (await get("USDT")).address,
     ]
-    const TOKEN_DECIMALS = [18, 18, 6, 6]
-    const LP_TOKEN_NAME = "Saddle nUSD/MIM/USDC/USDT"
-    const LP_TOKEN_SYMBOL = "saddleArbUSD"
+    const TOKEN_DECIMALS = [18, 6, 6]
+    const LP_TOKEN_NAME = "Mune DAI/USDC/USDT"
+    const LP_TOKEN_SYMBOL = "muneUSD"
     const INITIAL_A = 200
     const SWAP_FEE = 4e6 // 4bps
-    const ADMIN_FEE = 0
+    const ADMIN_FEE = 50e8
 
+    // Since this will be the first pool on Polygon, we initialize the target contract.
     await execute(
       "SwapFlashLoan",
       { from: deployer, log: true },
@@ -42,28 +42,29 @@ const func: DeployFunction = async function (hre: HardhatRuntimeEnvironment) {
       ).address,
     )
 
-    await save("SaddleArbUSDPool", {
+    await save("MuneUSDPool", {
       abi: (await get("SwapFlashLoan")).abi,
       address: (await get("SwapFlashLoan")).address,
     })
 
-    const lpTokenAddress = (await read("SaddleArbUSDPool", "swapStorage"))
+    const lpTokenAddress = (await read("MuneUSDPool", "swapStorage"))
       .lpToken
-    log(`Saddle Arbitrum USD Pool LP Token at ${lpTokenAddress}`)
+    log(`Mune USD Pool LP Token at ${lpTokenAddress}`)
 
-    await save("SaddleArbUSDPoolLPToken", {
+    await save("MuneUSDPoolLPToken", {
       abi: (await get("LPToken")).abi, // LPToken ABI
       address: lpTokenAddress,
     })
 
+    // Transfer ownership to the multisig
     await execute(
-      "SaddleArbUSDPool",
+      "MuneUSDPool",
       { from: deployer, log: true },
       "transferOwnership",
-      ARBITRUM_MULTISIG_ADDRESS,
+      MULTISIG_ADDRESS,
     )
   }
 }
 export default func
-func.tags = ["SaddleArbUSDPool"]
+func.tags = ["MuneUSDPool"]
 func.dependencies = ["SwapUtils", "SwapFlashLoan", "USDPoolTokens"]

@@ -5,6 +5,7 @@ import { BigNumber } from "ethers"
 
 const USD_TOKENS_ARGS: { [token: string]: any[] } = {
   FRAX: ["Frax", "FRAX", "18"],
+  DAI: ["Dai Stablecoin", "DAI", "18"],
   USDC: ["USD Coin", "USDC", "6"],
   USDT: ["Tether USD", "USDT", "6"],
 }
@@ -30,10 +31,10 @@ const func: DeployFunction = async function (hre: HardhatRuntimeEnvironment) {
         { from: deployer, log: true },
         "mint",
         deployer,
-        BigNumber.from(10).pow(decimals).mul(1000000),
+        BigNumber.from(10).pow(decimals).mul(1000000000),
       )
     }
   }
 }
 export default func
-func.tags = ["ArbUSDPoolV2Tokens"]
+func.tags = ["MuneFRAXMetaPoolTokens"]

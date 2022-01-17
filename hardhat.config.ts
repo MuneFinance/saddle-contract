@@ -19,7 +19,7 @@ if (process.env.HARDHAT_FORK) {
 }
 
 let config: HardhatUserConfig = {
-  defaultNetwork: "hardhat",
+  defaultNetwork: "matic_mumbai",
   networks: {
     hardhat: {
       deploy: ["./deploy/mainnet/"],
@@ -27,6 +27,7 @@ let config: HardhatUserConfig = {
     matic_mumbai: {
       url: process.env.ALCHEMY_API_MATIC_TESTNET,
       gasPrice: ethers.utils.parseUnits("3", "gwei").toNumber(),
+      chainId: 80001,
       accounts: {
         mnemonic: process.env.MNEMONIC_TEST_ACCOUNT,
       },
