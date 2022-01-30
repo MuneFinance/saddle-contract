@@ -78,8 +78,8 @@ contract SwapFlashLoan is Swap {
             _adminFee,
             lpTokenTargetAddress
         );
-        flashLoanFeeBPS = 8; // 8 bps
-        protocolFeeShareBPS = 0; // 0 bps
+        flashLoanFeeBPS = 6; // 6 bps
+        protocolFeeShareBPS = 3; // 3 bps
     }
 
     /*** STATE MODIFYING FUNCTIONS ***/

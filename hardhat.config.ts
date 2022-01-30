@@ -19,10 +19,19 @@ if (process.env.HARDHAT_FORK) {
 }
 
 let config: HardhatUserConfig = {
-  defaultNetwork: "matic_mumbai",
+  defaultNetwork: "polygon",
   networks: {
     hardhat: {
       deploy: ["./deploy/mainnet/"],
+    },
+    polygon: {
+      url: process.env.ALCHEMY_API_POLYGON,
+      gasPrice: ethers.utils.parseUnits("40", "gwei").toNumber(),
+      chainId: 137,
+      accounts: {
+        mnemonic: process.env.MNEMONIC_DEPLOY_ACCOUNT,
+      },
+      deploy: ["./deploy/polygon/"],
     },
     matic_mumbai: {
       url: process.env.ALCHEMY_API_MATIC_TESTNET,
@@ -31,7 +40,7 @@ let config: HardhatUserConfig = {
       accounts: {
         mnemonic: process.env.MNEMONIC_TEST_ACCOUNT,
       },
-      deploy: ["./deploy/matic/"],
+      deploy: ["./deploy/polygon/"],
     },
     // mainnet: {
     //   url: process.env.ALCHEMY_API,
@@ -118,12 +127,14 @@ let config: HardhatUserConfig = {
       1: 0, // similarly on mainnet it will take the first account as deployer. Note though that depending on how hardhat network are configured, the account 0 on one network can be different than on another
       42161: 0,
       10: 0,
+      137: 0,
     },
     libraryDeployer: {
       default: 0, // use a different account for deploying libraries on the hardhat network
       1: 0, // use the same address as the main deployer on mainnet
       42161: 0, // use the same address on arbitrum mainnet
       10: 0, // use the same address on optimism mainnet
+      137: 0,
     },
   },
   spdxLicenseIdentifier: {

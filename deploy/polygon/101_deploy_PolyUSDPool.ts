@@ -1,6 +1,6 @@
 import { HardhatRuntimeEnvironment } from "hardhat/types"
 import { DeployFunction } from "hardhat-deploy/types"
-import { MULTISIG_ADDRESS } from "../../utils/accounts"
+import { POLYGON_MULTISIG_ADDRESS } from "../../utils/accounts"
 
 const func: DeployFunction = async function (hre: HardhatRuntimeEnvironment) {
   const { deployments, getNamedAccounts } = hre
@@ -61,7 +61,7 @@ const func: DeployFunction = async function (hre: HardhatRuntimeEnvironment) {
       "MuneUSDPool",
       { from: deployer, log: true },
       "transferOwnership",
-      MULTISIG_ADDRESS,
+      POLYGON_MULTISIG_ADDRESS,
     )
   }
 }

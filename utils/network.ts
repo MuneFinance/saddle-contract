@@ -8,13 +8,15 @@ export const CHAIN_ID = {
   OPTIMISM_MAINNET: "10",
   OPTIMISM_TESTNET: "69",
   MATIC_MUMBAI: "80001",
+  POLYGON: "137",
 }
 
 export function isMainnet(networkId: string): boolean {
   return (
     networkId == CHAIN_ID.MAINNET ||
     networkId == CHAIN_ID.ARBITRUM_MAINNET ||
-    networkId == CHAIN_ID.OPTIMISM_MAINNET
+    networkId == CHAIN_ID.OPTIMISM_MAINNET ||
+    networkId == CHAIN_ID.POLYGON
   )
 }
 
