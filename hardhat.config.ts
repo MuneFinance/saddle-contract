@@ -19,7 +19,7 @@ if (process.env.HARDHAT_FORK) {
 }
 
 let config: HardhatUserConfig = {
-  defaultNetwork: "polygon",
+  defaultNetwork: "matic_mumbai",
   networks: {
     hardhat: {
       deploy: ["./deploy/mainnet/"],
@@ -35,12 +35,12 @@ let config: HardhatUserConfig = {
     },
     matic_mumbai: {
       url: process.env.ALCHEMY_API_MATIC_TESTNET,
-      gasPrice: ethers.utils.parseUnits("3", "gwei").toNumber(),
+      gasPrice: ethers.utils.parseUnits("11", "gwei").toNumber(),
       chainId: 80001,
       accounts: {
         mnemonic: process.env.MNEMONIC_TEST_ACCOUNT,
       },
-      deploy: ["./deploy/polygon/"],
+      deploy: ["./deploy/matic_mumbai/"],
     },
     // mainnet: {
     //   url: process.env.ALCHEMY_API,
