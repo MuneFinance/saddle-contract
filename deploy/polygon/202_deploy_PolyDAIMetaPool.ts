@@ -1,5 +1,6 @@
 import { HardhatRuntimeEnvironment } from "hardhat/types"
 import { DeployFunction } from "hardhat-deploy/types"
+import { POLYGON_MULTISIG_ADDRESS } from "../../utils/accounts"
 
 const func: DeployFunction = async function (hre: HardhatRuntimeEnvironment) {
   const { deployments, getNamedAccounts } = hre
@@ -14,10 +15,10 @@ const func: DeployFunction = async function (hre: HardhatRuntimeEnvironment) {
     // Constructor arguments
     const TOKEN_ADDRESSES = [
       (await get("DAI")).address,
-      (await get("MuneUSDPoolV2LPToken")).address,
+      (await get("MuneUSDPoolLPToken")).address,
     ]
     const TOKEN_DECIMALS = [18, 18]
-    const LP_TOKEN_NAME = "Mune DAI/muneUSDv2"
+    const LP_TOKEN_NAME = "Mune DAI/muneUSD"
     const LP_TOKEN_SYMBOL = "muneDAIUSD"
     const INITIAL_A = 100
     const SWAP_FEE = 4e6 // 4bps
@@ -55,8 +56,15 @@ const func: DeployFunction = async function (hre: HardhatRuntimeEnvironment) {
         await get("LPToken")
       ).address,
       (
-        await get("MuneUSDPoolV2")
+        await get("MuneUSDPool")
       ).address,
+    )
+
+    await execute(
+      "MuneDAIMetaPool",
+      { from: deployer, log: true },
+      "transferOwnership",
+      POLYGON_MULTISIG_ADDRESS,
     )
   }
 
@@ -72,7 +80,7 @@ export default func
 func.tags = ["MuneDAIMetaPool"]
 func.dependencies = [
   "MuneDAIMetaPoolTokens",
-  "MuneUSDPoolV2",
+  "MuneUSDPool",
   "MetaSwapUtils",
   "AmplificationUtils",
 ]

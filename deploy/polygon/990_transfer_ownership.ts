@@ -11,7 +11,8 @@ const func: DeployFunction = async function (hre: HardhatRuntimeEnvironment) {
 
   const contractsToTransferOwnership = [
     "MuneUSDPool",
-    "MuneFRAXMetaPool",
+    "MuneDAIMetaPool",
+    "MuneUSDTMetaPool",
   ]
 
   const currentChain = await getChainId()
@@ -49,4 +50,4 @@ const func: DeployFunction = async function (hre: HardhatRuntimeEnvironment) {
 }
 export default func
 func.tags = ["TransferOwnership"]
-func.dependencies = ["MuneUSDPool", "MuneFRAXMetaPool"]
+func.dependencies = ["MuneUSDPool", "MuneDAIMetaPool", "MuneUSDTMetaPool"]

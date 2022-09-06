@@ -7,13 +7,13 @@ const func: DeployFunction = async function (hre: HardhatRuntimeEnvironment) {
   const { deployer } = await getNamedAccounts()
 
   // Manually check if the pool is already deployed
-  const metaPoolDeposit = await getOrNull("MuneFRAXMetaPoolDeposit")
+  const metaPoolDeposit = await getOrNull("MuneDAIMetaPoolDeposit")
   if (metaPoolDeposit) {
-    log(`reusing "MuneFRAXMetaPoolDeposit" at ${metaPoolDeposit.address}`)
+    log(`reusing "MuneDAIMetaPoolDeposit" at ${metaPoolDeposit.address}`)
   } else {
     // This is the first time deploying MetaSwapDeposit contract.
     // Next time, we can just deploy a proxy that targets this.
-    await deploy("MuneFRAXMetaPoolDeposit", {
+    await deploy("MuneDAIMetaPoolDeposit", {
       from: deployer,
       log: true,
       contract: "MetaSwapDeposit",
@@ -21,21 +21,21 @@ const func: DeployFunction = async function (hre: HardhatRuntimeEnvironment) {
     })
 
     await execute(
-      "MuneFRAXMetaPoolDeposit",
+      "MuneDAIMetaPoolDeposit",
       { from: deployer, log: true },
       "initialize",
       (
         await get("MuneUSDPool")
       ).address,
       (
-        await get("MuneFRAXMetaPool")
+        await get("MuneDAIMetaPool")
       ).address,
       (
-        await get("MuneFRAXMetaPoolLPToken")
+        await get("MuneDAIMetaPoolLPToken")
       ).address,
     )
   }
 }
 export default func
-func.tags = ["MuneFRAXMetaPoolDeposit"]
-func.dependencies = ["MuneFRAXMetaPoolTokens", "MuneFRAXMetaPool"]
+func.tags = ["MuneDAIMetaPoolDeposit"]
+func.dependencies = ["MuneDAIMetaPoolTokens", "MuneDAIMetaPool"]

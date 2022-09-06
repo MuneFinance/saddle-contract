@@ -8,25 +8,25 @@ const func: DeployFunction = async function (hre: HardhatRuntimeEnvironment) {
   const { deployer } = await getNamedAccounts()
 
   // Manually check if the pool is already deployed
-  const metaPool = await getOrNull("MuneFRAXMetaPool")
+  const metaPool = await getOrNull("MuneUSDTMetaPool")
   if (metaPool) {
-    log(`reusing "MuneFRAXMetaPool" at ${metaPool.address}`)
+    log(`reusing "MuneUSDTMetaPool" at ${metaPool.address}`)
   } else {
     // Constructor arguments
     const TOKEN_ADDRESSES = [
-      (await get("FRAX")).address,
+      (await get("USDT")).address,
       (await get("MuneUSDPoolLPToken")).address,
     ]
-    const TOKEN_DECIMALS = [18, 18]
-    const LP_TOKEN_NAME = "Mune FRAX/muneUSD"
-    const LP_TOKEN_SYMBOL = "muneFraxUSD"
+    const TOKEN_DECIMALS = [6, 18]
+    const LP_TOKEN_NAME = "Mune USDT/muneUSD"
+    const LP_TOKEN_SYMBOL = "muneUSDTUSD"
     const INITIAL_A = 100
     const SWAP_FEE = 4e6 // 4bps
     const ADMIN_FEE = 50e8
 
     // This is the first time deploying MetaSwap contract.
     // Next time, we can just deploy a proxy that targets this.
-    await deploy("MuneFRAXMetaPool", {
+    await deploy("MuneUSDTMetaPool", {
       from: deployer,
       log: true,
       contract: "MetaSwap",
@@ -39,7 +39,7 @@ const func: DeployFunction = async function (hre: HardhatRuntimeEnvironment) {
     })
 
     await execute(
-      "MuneFRAXMetaPool",
+      "MuneUSDTMetaPool",
       {
         from: deployer,
         log: true,
@@ -61,26 +61,25 @@ const func: DeployFunction = async function (hre: HardhatRuntimeEnvironment) {
     )
 
     await execute(
-      "MuneFRAXMetaPool",
+      "MuneUSDTMetaPool",
       { from: deployer, log: true },
       "transferOwnership",
       POLYGON_MULTISIG_ADDRESS,
     )
   }
 
-  const lpTokenAddress = (await read("MuneFRAXMetaPool", "swapStorage"))
-    .lpToken
-  log(`Mune FRAX MetaSwap LP Token at ${lpTokenAddress}`)
+  const lpTokenAddress = (await read("MuneUSDTMetaPool", "swapStorage")).lpToken
+  log(`Mune USDT MetaSwap LP Token at ${lpTokenAddress}`)
 
-  await save("MuneFRAXMetaPoolLPToken", {
+  await save("MuneUSDTMetaPoolLPToken", {
     abi: (await get("LPToken")).abi, // LPToken ABI
     address: lpTokenAddress,
   })
 }
 export default func
-func.tags = ["MuneFRAXMetaPool"]
+func.tags = ["MuneUSDTMetaPool"]
 func.dependencies = [
-  "MuneFRAXMetaPoolTokens",
+  "MuneUSDTMetaPoolTokens",
   "MuneUSDPool",
   "MetaSwapUtils",
   "AmplificationUtils",

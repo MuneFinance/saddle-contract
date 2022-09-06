@@ -14,22 +14,23 @@ const func: DeployFunction = async function (hre: HardhatRuntimeEnvironment) {
   } else {
     // Constructor arguments
     const TOKEN_ADDRESSES = [
-      (await get("DAI")).address,
+      (await get("FRAX")).address,
       (await get("USDC")).address,
-      (await get("USDT")).address,
     ]
-    const TOKEN_DECIMALS = [18, 6, 6]
-    const LP_TOKEN_NAME = "Mune DAI/USDC/USDT"
+    const TOKEN_DECIMALS = [18, 6]
+    const LP_TOKEN_NAME = "Mune FRAX/USDC"
     const LP_TOKEN_SYMBOL = "muneUSD"
     const INITIAL_A = 200
     const SWAP_FEE = 4e6 // 4bps
     const ADMIN_FEE = 50e8
 
-    // Since this will be the first pool on Polygon, we initialize the target contract.
-    await execute(
-      "SwapFlashLoan",
+    const receipt = await execute(
+      "SwapDeployer",
       { from: deployer, log: true },
-      "initialize",
+      "deploy",
+      (
+        await get("SwapFlashLoan")
+      ).address,
       TOKEN_ADDRESSES,
       TOKEN_DECIMALS,
       LP_TOKEN_NAME,
@@ -42,13 +43,20 @@ const func: DeployFunction = async function (hre: HardhatRuntimeEnvironment) {
       ).address,
     )
 
+    const newPoolEvent = receipt?.events?.find(
+      (e: any) => e["event"] == "NewSwapPool",
+    )
+    const usdSwapAddress = newPoolEvent["args"]["swapAddress"]
+    log(
+      `deployed USD pool clone (targeting "SwapFlashLoan") at ${usdSwapAddress}`,
+    )
+
     await save("MuneUSDPool", {
       abi: (await get("SwapFlashLoan")).abi,
-      address: (await get("SwapFlashLoan")).address,
+      address: usdSwapAddress,
     })
 
-    const lpTokenAddress = (await read("MuneUSDPool", "swapStorage"))
-      .lpToken
+    const lpTokenAddress = (await read("MuneUSDPool", "swapStorage")).lpToken
     log(`Mune USD Pool LP Token at ${lpTokenAddress}`)
 
     await save("MuneUSDPoolLPToken", {
@@ -67,4 +75,9 @@ const func: DeployFunction = async function (hre: HardhatRuntimeEnvironment) {
 }
 export default func
 func.tags = ["MuneUSDPool"]
-func.dependencies = ["SwapUtils", "SwapFlashLoan", "USDPoolTokens"]
+func.dependencies = [
+  "SwapUtils",
+  "SwapDeployer",
+  "SwapFlashLoan",
+  "USDPoolTokens",
+]
